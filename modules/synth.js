@@ -63,6 +63,15 @@ export class Synth {
     return buffer;
   }
 
+  unlock() {
+    const { ctx } = this;
+    const source = ctx.createBufferSource();
+    source.buffer = ctx.createBuffer(1, 1, ctx.sampleRate);
+    source.connect(ctx.destination);
+    source.start(0);
+    return ctx.resume();
+  }
+
   setSong(song) {
     this.delay.delayTime.value = (60 / song.bpm) * 0.75;
     this.feedback.gain.value = song.fx.feedback;

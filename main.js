@@ -63,7 +63,7 @@ function activateAudio() {
   const { synth, detach } = activation;
   activation = null;
   detach();
-  synth.ctx.resume().then(
+  synth.unlock().then(
     () => {
       if (current?.synth === synth) ui.setAudioPending(false);
     },
@@ -124,7 +124,7 @@ function autoStart() {
   const synth = current.synth;
   if (synth.ctx.state === "running") return;
   ui.setAudioPending(true);
-  const events = ["pointerdown", "keydown", "touchstart"];
+  const events = ["pointerdown", "mousedown", "touchstart", "touchend", "click", "keydown"];
   const onGesture = (event) => {
     if (event.target?.closest?.(".play")) return;
     activateAudio();
