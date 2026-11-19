@@ -8,6 +8,14 @@ let volume = 0.8;
 let selected = songs[0];
 let current = null;
 let activation = null;
+const ACTIVATION_EVENTS = [
+  "pointerdown",
+  "mousedown",
+  "touchstart",
+  "touchend",
+  "click",
+  "keydown",
+];
 
 const scene = new Scene(document.querySelector("#scene"), selected);
 
@@ -58,6 +66,21 @@ function clearActivation() {
   ui.setAudioPending(false);
 }
 
+function armActivation(synth) {
+  const onGesture = (event) => {
+    if (event.target?.closest?.(".play")) return;
+    activateAudio();
+  };
+  ACTIVATION_EVENTS.forEach((event) => addEventListener(event, onGesture, { capture: true }));
+  activation = {
+    synth,
+    detach: () =>
+      ACTIVATION_EVENTS.forEach((event) =>
+        removeEventListener(event, onGesture, { capture: true }),
+      ),
+  };
+}
+
 function activateAudio() {
   if (!activation) return;
   const { synth, detach } = activation;
@@ -68,7 +91,10 @@ function activateAudio() {
       if (current?.synth === synth) ui.setAudioPending(false);
     },
     () => {
-      if (current?.synth === synth) ui.showError("Tu navegador no permite audio aquí");
+      if (current?.synth === synth) {
+        armActivation(synth);
+        ui.showError("Tu navegador no permite audio aquí");
+      }
     },
   );
 }
@@ -124,17 +150,7 @@ function autoStart() {
   const synth = current.synth;
   if (synth.ctx.state === "running") return;
   ui.setAudioPending(true);
-  const events = ["pointerdown", "mousedown", "touchstart", "touchend", "click", "keydown"];
-  const onGesture = (event) => {
-    if (event.target?.closest?.(".play")) return;
-    activateAudio();
-  };
-  events.forEach((event) => addEventListener(event, onGesture, { capture: true }));
-  activation = {
-    synth,
-    detach: () =>
-      events.forEach((event) => removeEventListener(event, onGesture, { capture: true })),
-  };
+  armActivation(synth);
 }
 
 addEventListener("pagehide", stop);

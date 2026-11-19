@@ -1,10 +1,11 @@
 export function createUI({ songs, selected, onToggle, onSelect, onNext, onVolume }) {
   const title = document.querySelector("#nowTitle");
-  const section = document.querySelector("#nowSection");
   const volume = document.querySelector("#vol");
   const floatingButton = document.querySelector(".play-floating");
+  const centerPlay = document.querySelector(".play-center");
   const nextButton = document.querySelector(".next-floating");
-  const pendingText = "Pulsa para activar el audio";
+  const pendingText = "Activar audio";
+  const readyText = "Reproducir";
   let currentSong = selected;
   let lastInfo = null;
   let audioPending = false;
@@ -39,13 +40,9 @@ export function createUI({ songs, selected, onToggle, onSelect, onNext, onVolume
     entry.button.addEventListener("click", () => onSelect(entry.song));
   }
   floatingButton.addEventListener("click", onToggle);
+  centerPlay.addEventListener("click", onToggle);
   nextButton.addEventListener("click", onNext);
   volume.addEventListener("input", (event) => onVolume(Number(event.target.value)));
-
-  function writeSection(text) {
-    section.textContent = audioPending ? pendingText : text;
-    section.classList.toggle("audio-pending", audioPending);
-  }
 
   function paint(state) {
     for (const entry of cards) {
@@ -63,7 +60,10 @@ export function createUI({ songs, selected, onToggle, onSelect, onNext, onVolume
       });
     }
     floatingButton.setAttribute("aria-pressed", String(Boolean(state)));
-    floatingButton.textContent = audioPending ? "Activar audio" : state ? "Detener" : "Reproducir";
+    floatingButton.textContent = audioPending ? pendingText : state ? "Detener" : readyText;
+    centerPlay.setAttribute("aria-pressed", String(Boolean(state)));
+    centerPlay.textContent = audioPending ? pendingText : readyText;
+    centerPlay.hidden = Boolean(state) && !audioPending;
     const next = songs[(songs.indexOf(currentSong) + 1) % songs.length];
     nextButton.title = `Siguiente: ${next.name}`;
     nextButton.setAttribute("aria-label", `Siguiente tema: ${next.name}`);
@@ -75,28 +75,24 @@ export function createUI({ songs, selected, onToggle, onSelect, onNext, onVolume
       lastInfo = null;
       paint(null);
       title.textContent = song.name;
-      writeSection("Pulsa reproducir para despegar");
     },
     showPlaying(info) {
       lastInfo = info;
       paint(info);
       title.textContent = currentSong.name;
-      writeSection(info.name);
     },
     showStopped() {
       lastInfo = null;
       paint(null);
       title.textContent = "En reposo";
-      writeSection("Pulsa reproducir para despegar");
     },
     showError(message) {
-      section.classList.remove("audio-pending");
-      section.textContent = message;
+      centerPlay.textContent = message;
+      centerPlay.hidden = false;
     },
     setAudioPending(value) {
       audioPending = value;
       paint(lastInfo);
-      writeSection(lastInfo ? lastInfo.name : "Pulsa reproducir para despegar");
     },
   };
 }

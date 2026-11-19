@@ -1,4 +1,4 @@
-const CACHE_NAME = "banda-espacial-v5";
+const CACHE_NAME = "banda-espacial-v8";
 
 const SHELL = [
   "./index.html",
