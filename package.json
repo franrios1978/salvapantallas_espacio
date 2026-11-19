@@ -1,0 +1,25 @@
+{
+  "name": "salvapantallas_espacio",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "dev": "servor src/ index.html 1234 --reload",
+    "lint": "oxlint src/",
+    "format": "oxfmt src/"
+  },
+  "devDependencies": {
+    "servor": "^4.0.2"
+  },
+  "devEngines": {
+    "packageManager": {
+      "name": "pnpm",
+      "version": "^11.22.0",
+      "onFail": "download"
+    }
+  }
+}
