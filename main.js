@@ -73,6 +73,18 @@ function activateAudio() {
   );
 }
 
+function tryAutoplayResume() {
+  const synth = current?.synth;
+  if (!synth || synth.ctx.state !== "suspended") return;
+  synth.ctx.resume().then(
+    () => {
+      if (current?.synth === synth && synth.ctx.state === "running" && activation)
+        clearActivation();
+    },
+    () => {},
+  );
+}
+
 function stop() {
   clearActivation();
   if (!current) return;
@@ -126,12 +138,27 @@ function autoStart() {
 }
 
 addEventListener("pagehide", stop);
+addEventListener("load", tryAutoplayResume);
+addEventListener("pageshow", tryAutoplayResume);
+document.addEventListener?.("visibilitychange", () => {
+  if (!document.hidden) tryAutoplayResume();
+});
 scene.start();
 autoStart();
+tryAutoplayResume();
 
 if (globalThis.navigator?.serviceWorker) {
   addEventListener("load", () => {
-    globalThis.navigator.serviceWorker.register("./sw.js", { scope: "./" }).catch(() => {});
+    const worker = globalThis.navigator.serviceWorker;
+    let controlled = Boolean(worker.controller);
+    worker.addEventListener("controllerchange", () => {
+      if (!controlled) {
+        controlled = true;
+        return;
+      }
+      globalThis.location?.reload();
+    });
+    worker.register("./sw.js", { scope: "./", updateViaCache: "none" }).catch(() => {});
   });
 }
 

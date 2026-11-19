@@ -44,6 +44,7 @@ export function createUI({ songs, selected, onToggle, onSelect, onNext, onVolume
 
   function writeSection(text) {
     section.textContent = audioPending ? pendingText : text;
+    section.classList.toggle("audio-pending", audioPending);
   }
 
   function paint(state) {
@@ -89,6 +90,7 @@ export function createUI({ songs, selected, onToggle, onSelect, onNext, onVolume
       writeSection("Pulsa reproducir para despegar");
     },
     showError(message) {
+      section.classList.remove("audio-pending");
       section.textContent = message;
     },
     setAudioPending(value) {
