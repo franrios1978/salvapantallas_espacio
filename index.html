@@ -5,22 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>Banda sonora espacial</title>
     <link rel="stylesheet" href="./css/global.css" />
+    <link rel="manifest" href="./manifest.json" />
+    <link rel="icon" type="image/png" href="./assets/images/icon-192.png" />
+    <link rel="apple-touch-icon" href="./assets/images/apple-touch-icon.png" />
+    <meta name="theme-color" content="#080a14" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   </head>
-  <body>
+  <body data-view="immersive">
+    <nav class="view-dock" aria-label="Controles de vista">
+      <div class="view-tabs" role="group" aria-label="Vista">
+        <button type="button" class="view-tab" data-view-target="immersive" aria-pressed="true">
+          Inmersivo
+        </button>
+        <button type="button" class="view-tab" data-view-target="normal" aria-pressed="false">
+          Cabina
+        </button>
+      </div>
+      <button type="button" class="play play-floating" aria-pressed="false">Reproducir</button>
+      <button type="button" class="play next-floating">Siguiente tema</button>
+    </nav>
+
     <main>
       <h1>Banda sonora espacial</h1>
       <p class="lead">
-        Un tema tecno compuesto como código. Lo toca tu navegador con la Web Audio API, sin archivos
-        de audio, y la escena de abajo reacciona a lo que suena.
+        Cuatro temas espaciales compuestos como código. Los toca tu navegador con la Web Audio API,
+        sin archivos de audio, y la escena de abajo reacciona a lo que suena.
       </p>
 
       <section class="stage" aria-label="Visualización del audio">
-        <canvas id="scene"></canvas>
+        <canvas id="scene" width="898" height="358"></canvas>
         <div class="hud">
-          <div><span>Tema</span><strong id="nowTitle">En reposo</strong></div>
+          <div><span>Tema</span><strong id="nowTitle">Deriva en Casiopea</strong></div>
           <div class="right">
             <span id="nowSection">Pulsa reproducir para despegar</span>
-            <strong id="clock">T+ 00:00</strong>
           </div>
         </div>
       </section>
@@ -33,11 +51,54 @@
       <section class="tracks" id="tracks"></section>
 
       <p class="note">
-        El tema dura 32 compases y vuelve a empezar. El bombo hace "respirar" al pad y al bajo
+        Cada tema dura 32 compases y vuelve a empezar. El bombo hace "respirar" al pad y al bajo
         (sidechain), y el analizador de frecuencias es la misma señal que moverá la nebulosa en el
         salvapantallas.
       </p>
     </main>
+
+    <template id="original-banda-sonora-espacial">
+      <title>Banda sonora espacial</title>
+      <meta name="claude:viewport-fit-sides" content="cover" />
+      <link rel="preconnect" href="https://fonts.googleapis.com" />
+      <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+      <link
+        rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Space+Grotesk:wght@500;600&display=swap"
+      />
+
+      <main>
+        <h1>Banda sonora espacial</h1>
+        <p class="lead">
+          Tres temas tecno compuestos como código. Los toca tu navegador con la Web Audio API, sin
+          archivos de audio, y la escena de abajo reacciona a lo que suena.
+        </p>
+
+        <section class="stage" aria-label="Visualización del audio">
+          <canvas id="scene"></canvas>
+          <div class="hud">
+            <div><span>Tema</span><strong id="nowTitle">En reposo</strong></div>
+            <div class="right">
+              <span id="nowSection">Elige un tema para despegar</span
+              ><strong id="clock">T+ 00:00</strong>
+            </div>
+          </div>
+        </section>
+
+        <div class="bar">
+          <label for="vol">Volumen</label>
+          <input id="vol" type="range" min="0" max="1" step="0.01" value="0.8" />
+        </div>
+
+        <section class="tracks" id="tracks"></section>
+
+        <p class="note">
+          Cada tema dura 32 compases y vuelve a empezar. El bombo hace "respirar" al pad y al bajo
+          (sidechain), y el analizador de frecuencias es la misma señal que moverá la nebulosa en el
+          salvapantallas.
+        </p>
+      </main>
+    </template>
 
     <script type="module" src="./main.js"></script>
   </body>
