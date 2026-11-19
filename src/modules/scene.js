@@ -1,9 +1,7 @@
-import { song } from "./song.js";
-
 export class Scene {
-  constructor(canvas, clock) {
+  constructor(canvas, song) {
     this.canvas = canvas;
-    this.clock = clock;
+    this.setSong(song);
     this.g = canvas.getContext("2d");
     this.bins = new Uint8Array(512);
     this.level = { bass: 0, mid: 0, high: 0 };
@@ -21,6 +19,11 @@ export class Scene {
     this.resize = this.resize.bind(this);
     new ResizeObserver(this.resize).observe(canvas);
     this.resize();
+  }
+
+  setSong(song) {
+    this.colorA = song.rgb.join(",");
+    this.colorB = song.rgb2.join(",");
   }
 
   setSource(source) {
@@ -70,32 +73,34 @@ export class Scene {
     this.last = now;
     this.readAudio();
 
-    const { g, width: W, height: H, level, motion, source } = this;
-    const colorA = song.rgb.join(",");
-    const colorB = song.rgb2.join(",");
+    const { g, width: W, height: H, level, motion, source, colorA, colorB } = this;
 
     g.fillStyle = "#05060d";
     g.fillRect(0, 0, W, H);
 
+    g.globalCompositeOperation = "lighter";
     for (let k = 0; k < 3; k++) {
       const x = W * (0.5 + 0.28 * Math.sin(now * 0.00021 * (k + 1) + k * 2));
       const y = H * (0.5 + 0.22 * Math.cos(now * 0.00017 * (k + 2) + k));
       const radius = Math.max(W, H) * (0.28 + k * 0.05 + level.bass * 0.25 * motion);
       const gradient = g.createRadialGradient(x, y, 0, x, y, radius);
       const color = k === 1 ? colorB : colorA;
-      gradient.addColorStop(0, `rgba(${color},${0.2 + level.mid * 0.35 * motion})`);
+      const alpha = 0.28 + level.mid * 0.35 * motion;
+      gradient.addColorStop(0, `rgba(${color},${alpha})`);
+      gradient.addColorStop(0.4, `rgba(${color},${alpha * 0.42})`);
       gradient.addColorStop(1, `rgba(${color},0)`);
       g.fillStyle = gradient;
       g.fillRect(0, 0, W, H);
     }
+    g.globalCompositeOperation = "source-over";
 
-    const speed = (0.1 + level.bass * 1.1) * motion;
+    const speed = (0.05 + level.bass * 0.4) * motion;
     const cx = W / 2;
     const cy = H / 2;
     const scale = Math.max(W, H) * 0.6;
     g.lineCap = "round";
     for (const star of this.stars) {
-      const previous = star.z + speed * delta * 2.5;
+      const previous = star.z + speed * delta * 1.5;
       star.z -= speed * delta;
       if (star.z < 0.02) {
         star.x = Math.random() * 2 - 1;
@@ -120,10 +125,6 @@ export class Scene {
         const height = 3 + value * 30;
         g.fillRect(bar * barWidth + 1, H - height, barWidth - 2, height);
       }
-      const elapsed = source.synth.ctx.currentTime - source.player.t0;
-      const minutes = String(Math.floor(elapsed / 60)).padStart(2, "0");
-      const seconds = String(Math.floor(elapsed % 60)).padStart(2, "0");
-      this.clock.textContent = `T+ ${minutes}:${seconds}`;
     }
 
     requestAnimationFrame((next) => this.frame(next));

@@ -8,6 +8,9 @@
   --fg: #e6e9f6;
   --muted: #8f98bb;
   --rose: #ff86b6;
+  --cyan: #60dcff;
+  --amber: #ffbe78;
+  --mint: #78ffd2;
   --display: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
   --body: "Inter", ui-sans-serif, system-ui, sans-serif;
   --mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
@@ -31,6 +34,56 @@ body {
   padding-block: 28px 48px;
   padding-left: max(16px, env(safe-area-inset-left, 0px));
   padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+.view-dock {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  margin: 0 0 20px auto;
+}
+
+.view-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 3px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--panel);
+}
+
+.view-tab,
+.play-floating,
+.next-floating {
+  border: 0;
+  border-radius: 999px;
+  padding: 8px 14px;
+  background: transparent;
+  color: var(--muted);
+  font: 600 12px var(--mono);
+  cursor: pointer;
+}
+
+.view-tab[aria-pressed="true"] {
+  background: var(--rose);
+  color: #080a14;
+}
+
+.play-floating {
+  margin-top: 0;
+  border: 1px solid var(--rose);
+  color: var(--fg);
+}
+
+.play-floating[aria-pressed="true"] {
+  background: var(--rose);
+  color: #080a14;
+}
+
+body[data-view="normal"] .play-floating,
+body[data-view="normal"] .next-floating {
+  display: none;
 }
 
 img {
@@ -136,6 +189,10 @@ canvas {
   transition: border-color 0.2s;
 }
 
+.card.selected {
+  border-color: color-mix(in srgb, var(--c) 55%, var(--line));
+}
+
 .card.on {
   border-color: var(--c);
 }
@@ -211,6 +268,20 @@ button.play[aria-pressed="true"] {
   color: #080a14;
 }
 
+button.play.next-floating {
+  margin-top: 0;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 8px 14px;
+  color: var(--muted);
+  font: 600 12px var(--mono);
+}
+
+button.play.next-floating:hover {
+  background: var(--panel);
+  color: var(--fg);
+}
+
 :focus-visible {
   outline: 2px solid var(--fg);
   outline-offset: 2px;
@@ -221,4 +292,58 @@ button.play[aria-pressed="true"] {
   font-size: 13px;
   max-width: 70ch;
   margin: 22px 0 0;
+}
+
+body[data-view="immersive"] {
+  padding: 0;
+  overflow: hidden;
+}
+
+body[data-view="immersive"] main {
+  max-width: none;
+  margin: 0;
+}
+
+body[data-view="immersive"] main > :not(.stage) {
+  display: none;
+}
+
+body[data-view="immersive"] .stage {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  margin: 0;
+  border: 0;
+  border-radius: 0;
+}
+
+body[data-view="immersive"] .hud {
+  padding: max(24px, env(safe-area-inset-top, 0px)) max(24px, env(safe-area-inset-right, 0px))
+    max(24px, env(safe-area-inset-bottom, 0px)) max(24px, env(safe-area-inset-left, 0px));
+  font-size: 14px;
+}
+
+body[data-view="immersive"] .hud strong {
+  font-size: clamp(24px, 4vw, 44px);
+}
+
+body[data-view="immersive"] .view-dock {
+  position: fixed;
+  z-index: 2;
+  inset: auto auto max(20px, env(safe-area-inset-bottom, 0px)) 50%;
+  transform: translateX(-50%);
+  margin: 0;
+  padding: 6px;
+  background: color-mix(in srgb, var(--panel) 80%, transparent);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  backdrop-filter: blur(10px);
+}
+
+body[data-view="immersive"] .view-tabs {
+  padding: 0;
+  border: 0;
+  background: transparent;
 }
