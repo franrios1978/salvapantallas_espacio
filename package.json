@@ -13,6 +13,7 @@
     "format": "oxfmt src/"
   },
   "devDependencies": {
+    "gh-pages": "^6.3.0",
     "servor": "^4.0.2"
   },
   "devEngines": {
