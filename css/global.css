@@ -43,6 +43,11 @@ body {
   gap: 8px;
   width: fit-content;
   margin: 0 0 20px auto;
+  transition: opacity 180ms ease;
+}
+
+.view-dock.is-playing {
+  opacity: 0.5;
 }
 
 .view-tabs {

@@ -1,6 +1,7 @@
 export function createUI({ songs, selected, onToggle, onSelect, onNext, onVolume }) {
   const title = document.querySelector("#nowTitle");
   const volume = document.querySelector("#vol");
+  const viewDock = document.querySelector(".view-dock");
   const floatingButton = document.querySelector(".play-floating");
   const centerPlay = document.querySelector(".play-center");
   const nextButton = document.querySelector(".next-floating");
@@ -59,6 +60,7 @@ export function createUI({ songs, selected, onToggle, onSelect, onNext, onVolume
         segment.classList.toggle("done", playing && index < state.index);
       });
     }
+    viewDock.classList.toggle("is-playing", Boolean(state));
     floatingButton.setAttribute("aria-pressed", String(Boolean(state)));
     floatingButton.textContent = audioPending ? pendingText : state ? "Detener" : readyText;
     centerPlay.setAttribute("aria-pressed", String(Boolean(state)));
